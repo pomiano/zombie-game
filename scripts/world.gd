@@ -17,10 +17,10 @@ func send_message(message: String):
 	if connected:
 		var data = (message + "\n").to_utf8_buffer()
 		print("Sending: ", message)
-		udp.put_packet(data)  # Wysyłamy pakiet na adres serwera UDP
+		udp.put_packet(data)
 
 func _input(event):
-	if event.is_action_pressed("ui_accept"):  # Domyślnie "Enter" jest przypisane do "ui_accept", ale "N" też możemy przypisać w Input Map
+	if event.is_action_pressed("ui_accept"):  # "Enter"
 		send_message("hello from Godot!")
 
 func _process(delta):
