@@ -18,6 +18,10 @@ var player_id : int
 
 const VELOCITY = 64
 
+func set_role(r):
+	current_role = r
+	set_sprite()
+
 func set_sprite() -> void:
 	if current_role == role.HUMAN:
 		sprite.region_rect = Rect2(Vector2(0,0),Vector2(16,16))

@@ -6,6 +6,10 @@ PORT = 2137
 clients = set()
 running = True
 
+#player = [1,0,50,50]
+#players = []
+#players.append(player)
+
 def receive_messages(sock):
     global running
     while running:
@@ -19,7 +23,7 @@ def receive_messages(sock):
                 continue
                 
             print(f"Received from {addr}: {msg}")
-            #sock.sendto(msg.upper().encode(), addr)  # echo
+            #sock.sendto(msg.upper().encode())  # echo
             
         except socket.error:
             if running:
@@ -33,7 +37,7 @@ def send_messages(sock):
     global running
     while running:
         try:
-            msg = input()
+            msg = input() # change this to a string with data that server wants to send out
             if msg == "/exit":
                 running = False
                 break
