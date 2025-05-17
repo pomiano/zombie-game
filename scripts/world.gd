@@ -3,7 +3,6 @@ extends Node2D
 var udp := PacketPeerUDP.new()
 var connected := false
 var game_running := true
-enum role {HUMAN, ZOMBIE}
 
 @export 
 var player : Player
@@ -34,7 +33,7 @@ func send_message(message: String):
 		print("Sending: ", message)
 		udp.put_packet(data)
 
-func send_position_and_role():
+func send_data_to_server():
 	if connected and player:
 		var pos_str = "%d;%d;%f;%f" % [player.player_id, player.current_role, player.position.x, player.position.y]
 		var data = pos_str.to_utf8_buffer()
@@ -83,15 +82,16 @@ func get_data_from_server():
 		add_child(new_player)
 		players.append(new_player)
 	
-	elif(type_of_data == "D"): #player disconnect TODO
+	elif(type_of_data == "D"): #TODO player disconnect 
 		pass
 
 func _input(event):
-	if event.is_action_pressed("ui_accept"):  # "Enter"
+	if event.is_action_pressed("ui_accept"):  # Enter
 		#send_message("hello from Godot!")
-		send_position_and_role()
+		send_data_to_server()
 
 func _process(delta):
 	if connected:
 		while udp.get_available_packet_count() > 0:
 			get_data_from_server()
+			#send_data_to_server() #TODO

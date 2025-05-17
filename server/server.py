@@ -6,9 +6,11 @@ PORT = 2137
 clients = set()
 running = True
 
+#TODO
 #player = [1,0,50,50]
 #players = []
-#players.append(player)
+#players.append(player)                 - player joined
+#players[id] = [id,role,pos_x,pos_y]    - got data from player       
 
 def receive_messages(sock):
     global running
