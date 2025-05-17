@@ -1,1 +1,4 @@
 res://scenes/world.tscn
+res://scripts/player.gd
+res://scripts/world.gd
+res://scenes/player.tscn

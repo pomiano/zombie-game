@@ -13,6 +13,8 @@ enum role {HUMAN, ZOMBIE}
 var current_role: role = role.HUMAN
 @export
 var playable: bool = false
+@export
+var player_id : int
 
 const VELOCITY = 64
 

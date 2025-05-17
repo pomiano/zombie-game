@@ -19,7 +19,7 @@ def receive_messages(sock):
                 continue
                 
             print(f"Received from {addr}: {msg}")
-            sock.sendto(msg.upper().encode(), addr)  # echo
+            #sock.sendto(msg.upper().encode(), addr)  # echo
             
         except socket.error:
             if running:
