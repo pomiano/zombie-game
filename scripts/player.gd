@@ -8,6 +8,8 @@ var camera = $Camera2D
 @onready
 var collision_box = $CollisionShape2D
 
+signal collided_with_player(victim_id: int)
+
 enum role {HUMAN, ZOMBIE}
 @export
 var current_role: role = role.HUMAN
@@ -62,3 +64,4 @@ func _process(delta: float) -> void:
 					collider_instance.current_role = role.ZOMBIE
 			set_sprite()
 			collider_instance.set_sprite()
+			emit_signal("collided_with_player", collider_instance.player_id)
