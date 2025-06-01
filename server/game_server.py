@@ -171,7 +171,7 @@ class GameServer:
                 logger.debug(f"Atakujący {attacker_player.id} próbował zaatakować nieistniejącą ofiarę {victim_id}")
                 return
 
-            if attacker_player.role != config.ROLE_ZOMBIE:
+            if attacker_player.role != victim_player.role:
                 victim_player.role = config.ROLE_ZOMBIE
                 attacker_player.role = config.ROLE_ZOMBIE
                 
