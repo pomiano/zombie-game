@@ -1,4 +1,5 @@
 res://scenes/world.tscn
 res://assets/world.tres
 res://scenes/player.tscn
+res://scripts/world.gd
 res://scenes/mainMenu.tscn
