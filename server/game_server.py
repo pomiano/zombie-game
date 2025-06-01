@@ -20,6 +20,8 @@ class GameServer:
 
         self.players_by_addr: Dict[Tuple[str, int], Player] = {}
         self.players_by_id: Dict[int, Player] = {}
+        self.players_nicknames_by_id: Dict[int, Tuple[str, bool]] = {}
+
         self._player_id_seq = 0
 
         self._lobby_addrs: Set[Tuple[str, int]] = set()
@@ -80,7 +82,7 @@ class GameServer:
             logger.info(
                 f"Przydzielono role: {len(chosen_zombies)} zombie, {len(all_players_list) - len(chosen_zombies)} ludzi.")
 
-    def _handle_join_request(self, addr: Tuple[str, int]):
+    def _handle_join_request(self, addr: Tuple[str, int], nickname: str):
         if self._game_started:
             logger.info(f"Gra już się rozpoczęła. Ignorowanie prośby o dołączenie od {addr}.")
             return
@@ -94,27 +96,39 @@ class GameServer:
         pos_y = float(random.randint(config.MAP_MIN_Y, config.MAP_MAX_Y))
 
         new_player = Player(id=player_id, address=addr, x=pos_x, y=pos_y, role=config.ROLE_HUMAN)
+
         self.players_by_addr[addr] = new_player
         self.players_by_id[player_id] = new_player
         self._lobby_addrs.add(addr)
 
-        logger.info(f"Gracz {player_id} ({addr}) dołączył do lobby. Pozycja: ({pos_x},{pos_y})")
 
-        join_confirm_msg_self = f"{config.MSG_PREFIX_JOIN_CONFIRMATION};{new_player.format_for_message()}"
-        if self.sock: self.sock.sendto(join_confirm_msg_self.encode(), new_player.address)
+        self.players_nicknames_by_id[player_id] = {
+            "nickname": nickname,
+            "ready": False
+        }
 
-        join_broadcast_msg = f"{config.MSG_PREFIX_JOIN_CONFIRMATION};{new_player.format_for_message()}"
-        other_players_addrs = [p_addr for p_addr in self.players_by_addr if p_addr != new_player.address]
-        if other_players_addrs:
-            self._broadcast_message(join_broadcast_msg, other_players_addrs)
+        logger.info(f"Gracz {player_id} ({addr}, nick: {nickname}) dołączył do lobby.")
 
-        for p_obj in self.players_by_addr.values():
-            if p_obj.id != new_player.id:
-                if self.sock: self.sock.sendto(
-                    f"{config.MSG_PREFIX_JOIN_CONFIRMATION};{p_obj.format_for_message()}".encode(),
-                    new_player.address)
+        all_players_info = []
+        for pid, pdata in self.players_nicknames_by_id.items():
+            nick = pdata["nickname"]
+            ready = pdata["ready"]
+            all_players_info.append(str(pid))
+            all_players_info.append(nick)
+            all_players_info.append("1" if ready else "0")
 
-        self._check_start_conditions()
+        join_confirm_msg_self = config.MSG_PREFIX_JOIN_CONFIRMATION +";" + str(player_id) +";"+ str(pos_x)+";" + str(pos_y)+ ";" + ";".join(all_players_info)
+        logger.info(f"Wysyłanie potwierdzenia do nowego gracza ({addr}): {join_confirm_msg_self}")
+
+        if self.sock:
+            self.sock.sendto(join_confirm_msg_self.encode(), addr)
+            broadcast_msg = config.MSG_PREFIX_LOBBY + ";" + ";".join(all_players_info)
+            #logger.info(f"Wysyłanie broadcastu do innych graczy: {broadcast_msg}")
+            for other_addr in self.players_by_addr:
+                if other_addr != addr:
+                    self.sock.sendto(broadcast_msg.encode(), other_addr)
+
+
 
     def _handle_position_update(self, addr: Tuple[str, int], parts: List[str]):
         player = self.players_by_addr.get(addr)
@@ -148,8 +162,7 @@ class GameServer:
             victim_id = int(parts[2])
 
             if reported_attacker_id != attacker_player.id:
-                logger.warning(
-                    f"Wiadomość o ataku od {sender_addr} z niezgodnym ID atakującego ({reported_attacker_id} vs {attacker_player.id})")
+                logger.warning(f"Wiadomość o ataku od {sender_addr} z niezgodnym ID atakującego ({reported_attacker_id} vs {attacker_player.id})")
                 return
 
             victim_player = self.players_by_id.get(victim_id)
@@ -158,14 +171,62 @@ class GameServer:
                 logger.debug(f"Atakujący {attacker_player.id} próbował zaatakować nieistniejącą ofiarę {victim_id}")
                 return
 
-            if attacker_player.role == config.ROLE_ZOMBIE and victim_player.role == config.ROLE_HUMAN:
+            if attacker_player.role != victim_player.role:
                 victim_player.role = config.ROLE_ZOMBIE
+                attacker_player.role = config.ROLE_ZOMBIE
+                
                 logger.info(f"Gracz {victim_player.id} zainfekowany przez Gracza {attacker_player.id}.")
                 self._broadcast_message(
                     f"{config.MSG_CLIENT_COLLISION};{victim_player.id};{config.ROLE_ZOMBIE}")
                 self._check_game_over_conditions()
         except (IndexError, ValueError) as e:
             logger.warning(f"Nieprawidłowa wiadomość o ataku od {sender_addr}: {parts}. Błąd: {e}")
+
+    def handle_client_ready(self, player_id: int):
+        if player_id in self.players_nicknames_by_id:
+            self.players_nicknames_by_id[player_id]["ready"] = True
+            logger.info(f"Gracz {player_id} oznaczył się jako gotowy.")
+            self.send_lobby_update()
+            self._check_start_conditions()
+        else:
+            logger.warning(f"Otrzymano MSG_CLIENT_READY z nieznanym player_id: {player_id}")
+
+    def handle_player_left(self, player_id: int):
+        if player_id in self.players_nicknames_by_id:
+            nickname = self.players_nicknames_by_id[player_id]["nickname"]
+            del self.players_nicknames_by_id[player_id]
+            logger.info(f"Gracz {player_id} ({nickname}) opuścił lobby.")
+
+            addr_to_remove = next((addr for addr, player in self.players_by_addr.items() if player.id == player_id),
+                                  None)
+
+            if addr_to_remove is not None:
+                del self.players_by_addr[addr_to_remove]
+                logger.info(f"Usunięto adres {addr_to_remove} z players_by_addr")
+            else:
+                logger.warning(f"Nie znaleziono adresu dla player_id {player_id} w players_by_addr")
+
+            self.send_lobby_update()
+        else:
+            logger.warning(f"Próba usunięcia gracza {player_id}, który nie istnieje.")
+
+    def reset_players_ready(self):
+        for pid in self.players_nicknames_by_id:
+            self.players_nicknames_by_id[pid]["ready"] = False
+
+    def send_lobby_update(self):
+        all_players_info = []
+        for pid, pdata in self.players_nicknames_by_id.items():
+            nick = pdata["nickname"]
+            ready = pdata["ready"]
+            all_players_info.append(str(pid))
+            all_players_info.append(nick)
+            all_players_info.append("1" if ready else "0")
+
+        broadcast_msg = config.MSG_PREFIX_LOBBY + ";" + ";".join(all_players_info)
+        logger.info(f"Wysyłanie zaktualizowanej listy graczy: {broadcast_msg}")
+        for addr in self.players_by_addr:
+            self.sock.sendto(broadcast_msg.encode(), addr)
 
     def _receive_messages_loop(self):
         if not self.sock: return
@@ -181,7 +242,12 @@ class GameServer:
                 command = parts[0]
 
                 if command == config.MSG_CLIENT_JOIN_REQUEST:
-                    self._handle_join_request(addr)
+                    parts = msg.split(";", 1)
+                    if len(parts) == 2:
+                        nickname = parts[1].strip()
+                        self._handle_join_request(addr, nickname)
+                    else:
+                        logger.warning(f"Brak nicku w wiadomości dołączenia od {addr}")
 
                 elif command == config.MSG_CLIENT_POSITION_UPDATE and len(parts) == 5:
                     if self._game_started:
@@ -190,6 +256,24 @@ class GameServer:
                 elif command == config.MSG_CLIENT_COLLISION and len(parts) == 3:
                     if self._game_started:
                         self._handle_attack(addr, parts)
+
+                elif command == config.MSG_CLIENT_READY:
+                    if len(parts) >= 2:
+                        try:
+                            player_id = int(parts[1])
+                            self.handle_client_ready(player_id)
+                        except ValueError:
+                            logger.error("Nieprawidłowe ID gracza w MSG_CLIENT_READY")
+
+                elif command == config.MSG_CLIENT_LEFT:
+                    if len(parts) >= 2:
+                        try:
+                            player_id = int(parts[1])
+                            self.handle_player_left(player_id)
+                        except ValueError:
+                            logger.error("Nieprawidłowe ID gracza w MSG_CLIENT_LEFT")
+
+
             except socket.timeout:
                 continue  # Normalne, jeśli gniazdo ma timeout
             except OSError as e:
@@ -202,13 +286,18 @@ class GameServer:
 
     def _check_start_conditions(self):
         with self._server_lock:
-            if len(self._lobby_addrs) >= config.MIN_PLAYERS_TO_START and not self._game_started:
+            if len(self._lobby_addrs) >= config.MIN_PLAYERS_TO_START \
+                    and self.are_all_players_ready() and not self._game_started:
                 self._game_started = True
                 self._game_loop_active = False
                 logger.info(
                     f"Osiągnięto minimalną liczbę graczy ({config.MIN_PLAYERS_TO_START}). Rozpoczynanie odliczania.")
+
                 threading.Thread(target=self._start_game_countdown_sequence, daemon=True,
                                  name="CountdownThread").start()
+
+    def are_all_players_ready(self) -> bool:
+        return all(player["ready"] for player in self.players_nicknames_by_id.values())
 
     def _start_game_countdown_sequence(self):
         for i in range(config.GAME_COUNTDOWN_SECONDS, -1, -1):
@@ -230,10 +319,20 @@ class GameServer:
 
         logger.info("Game starts now !")
         self._game_loop_active = True
+
+        threading.Thread(target=self._game_timer, daemon=True, name="GameTimerThread").start()
+
         if self._game_loop_thread is None or not self._game_loop_thread.is_alive():
             self._game_loop_thread = threading.Thread(target=self._game_update_loop, name="GameLoopThread",
                                                       daemon=True)
             self._game_loop_thread.start()
+
+    def _game_timer(self):
+        time.sleep(config.GAME_DURATION_SECONDS)
+        if self._game_started and self.running:
+            logger.info("Czas gry upłynął. Kończenie gry.")
+            self._broadcast_message(f"{config.MSG_PREFIX_GAME_OVER}")
+            self._reset_to_lobby_state(inform_clients=False)
 
     def _game_update_loop(self):
         logger.info("Pętla aktualizacji gry uruchomiona.")
@@ -283,13 +382,16 @@ class GameServer:
         if game_over_msg_payload:
             logger.info(f"Koniec Gry: {game_over_msg_payload}")
             self._broadcast_message(f"{config.MSG_PREFIX_GAME_OVER};{game_over_msg_payload}")
-            self._reset_game(game_over_msg_payload)
+            #self._reset_game(game_over_msg_payload)
+            self._reset_to_lobby_state(inform_clients=False)
             return True
         return False
 
     def _reset_to_lobby_state(self, inform_clients=True):
         self._game_started = False
         self._game_loop_active = False
+
+        self.reset_players_ready()
 
         self._lobby_addrs.clear()
         for addr, player_obj in self.players_by_addr.items():

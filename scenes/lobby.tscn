@@ -1,0 +1,61 @@
+[gd_scene load_steps=5 format=3 uid="uid://mpjegv011cia"]
+
+[ext_resource type="Script" uid="uid://div47xglobfni" path="res://scripts/lobby.gd" id="1_o1atq"]
+[ext_resource type="Texture2D" uid="uid://l5lbjg0dfoj7" path="res://assets/tło.png" id="2_5gu6x"]
+[ext_resource type="FontFile" uid="uid://dfipiwf575h5t" path="res://assets/fonts/Creepster-Regular.ttf" id="3_q60fs"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_5gu6x"]
+font = ExtResource("3_q60fs")
+font_size = 35
+font_color = Color(0.247059, 0.717647, 0.419608, 1)
+
+[node name="Control" type="Control"]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o1atq")
+
+[node name="Sprite2D" type="Sprite2D" parent="."]
+position = Vector2(577.875, 328.375)
+scale = Vector2(0.604297, 0.61412)
+texture = ExtResource("2_5gu6x")
+
+[node name="VBoxContainer" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.255
+anchor_top = 0.278
+anchor_right = 0.83
+anchor_bottom = 0.698
+offset_left = 98.24
+offset_top = -69.144
+offset_right = -161.16
+offset_bottom = 95.696
+
+[node name="CountdownLabel" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="Information" type="Label" parent="VBoxContainer"]
+layout_mode = 2
+text = "Gracze w lobby:"
+label_settings = SubResource("LabelSettings_5gu6x")
+
+[node name="PlayerList" type="VBoxContainer" parent="VBoxContainer"]
+layout_mode = 2
+
+[node name="ReadyButton" type="Button" parent="VBoxContainer"]
+self_modulate = Color(0.247059, 0.717647, 0.419608, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_q60fs")
+theme_override_font_sizes/font_size = 25
+text = "Gotowy"
+
+[node name="BackButton" type="Button" parent="VBoxContainer"]
+self_modulate = Color(0.247059, 0.717647, 0.419608, 1)
+layout_mode = 2
+theme_override_fonts/font = ExtResource("3_q60fs")
+theme_override_font_sizes/font_size = 25
+text = "Powrót do menu"

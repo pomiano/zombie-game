@@ -11,8 +11,16 @@ config_version=5
 [application]
 
 config/name="Zombie"
-run/main_scene="res://scenes/world.tscn"
+run/main_scene="uid://bypya4yktiad5"
 config/features=PackedStringArray("4.4", "GL Compatibility")
+
+[autoload]
+
+Global="*res://scripts/Global.gd"
+
+[display]
+
+window/size/resizable=false
 
 [rendering]
 
