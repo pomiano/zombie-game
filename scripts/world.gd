@@ -17,6 +17,9 @@ var PlayerScene: PackedScene
 
 @onready var time_label: Label = $UI/TimeLabel
 
+@onready var humans_label: Label = $UI/PlayersLabel
+@onready var zombies_label: Label = $UI/ZombiesLabel
+
 var players := {}
 const HUMAN = 0
 const ZOMBIE = 1
@@ -49,6 +52,11 @@ func _on_player_collided(victim_id: int) -> void:
 func reset_players_ready() -> void:
 	for pid in Global.players_nicknames_by_id.keys():
 		Global.players_nicknames_by_id[pid]["ready"] = false
+		
+func update_num_players(humans:int, zombies:int) -> void:
+	humans_label.text = "LUDZIE: %d" % [humans]
+	zombies_label.text = "ZOMBIE: %d" % [zombies]
+	
 
 func get_data_from_server():
 	var packet = Global.udp.get_packet()
@@ -57,6 +65,9 @@ func get_data_from_server():
 	#print("Received from server: ", received)
 
 	var type_of_data = String(received[0]) #idk dlaczego nie mogę po prostu użyć chara
+	
+	var num_zombies: int = 0
+	var num_humans: int = 0 
 	
 	if type_of_data == "P":
 		var player_chunks = received[1].split("|")
@@ -70,7 +81,12 @@ func get_data_from_server():
 			var current_role = int(parts[1])
 			var current_x = float(parts[2])
 			var current_y = float(parts[3])
-
+			
+			if current_role == HUMAN:
+				num_humans+=1
+			else:
+				num_zombies+=1
+				
 			if current_id == player.player_id:
 				player.set_role(current_role)
 				continue
@@ -87,12 +103,15 @@ func get_data_from_server():
 				add_child(new_player)
 				new_player.connect("collided_with_player", Callable(self, "_on_player_collided"))
 				players[current_id] = new_player
+				
+		update_num_players(num_humans, num_zombies)
 		
 	elif type_of_data == "G":
 		if who_won() == ZOMBIE:
-			gameover_label.text = "GAME OVER\nZOMBIES WON"
+			gameover_label.text = "KONIEC GRY\nZWYCIESTWO ZOMBIE"
 		else:
-			gameover_label.text = "GAME OVER\nHUMANS WON"
+			gameover_label.text = "KONIEC\nZWYCIESTWO GRACZY"
+			
 			
 		for id in players:
 			players[id].set_role(ZOMBIE)
@@ -126,6 +145,12 @@ func update_players_panel():
 		var label = Label.new()
 		label.text = "ID: %d - %s" % [id, nick]
 		label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		label.set("theme_override_colors/font_color", Color("#ff4416"))  
+		var custom_font = preload("res://assets/fonts/Creepster-Regular.ttf")
+		label.set("theme_override_fonts/font", custom_font)  
+
+		label.set("theme_override_font_sizes/font_size", 23)
+		
 		players_box.add_child(label)
 
 func send_collision_to_server(target_player_id: int):

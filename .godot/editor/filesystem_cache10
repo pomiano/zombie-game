@@ -1,25 +1,26 @@
 ea4bc82a6ad023ab7ee23ee620429895
-::res://::1748788549
-::res://assets/::1748788549
-logoZombie.png::CompressedTexture2D/CompressedTexture2D::8882488010291355819::1748788549::1748788712::1::::<><><>0<>0<>5b9fb4e1253d2d207aae5fd251aad805<>res://.godot/imported/logoZombie.png-8f71317e5b9d40aa3e4ff67445518564.ctex::
-tło.png::CompressedTexture2D/CompressedTexture2D::834678768473570946::1748788549::1748788712::1::::<><><>0<>0<>d70618fe14246c2bd3d97dd5173746ea<>res://.godot/imported/tło.png-8bc49584213b481b8f7b21a62152b79e.ctex::
-world.tres::TileSet::6954757730283678200::1748788549::0::1::::<><><>0<>0<><>::uid://cl41j42tplf8p::::res://assets/character and tileset/Dungeon_Tileset.png
-::res://assets/character and tileset/::1748788549
-Dungeon_Character_2.png::CompressedTexture2D/CompressedTexture2D::6451761332043068098::1748788549::1748788549::1::::<><><>0<>0<>f265c41bc5475318a14bf8058f82f780<>res://.godot/imported/Dungeon_Character_2.png-90329430ee22b8bd511b976d7673e6bc.ctex::
-Dungeon_Tileset.png::CompressedTexture2D/CompressedTexture2D::5606381881999994733::1748788549::1748788549::1::::<><><>0<>0<>84180e3b150eee3a4950ad93ee171143<>res://.godot/imported/Dungeon_Tileset.png-979c160fca999bf489f0c7d52b4b5e68.ctex::
-::res://assets/fonts/::1748788549
-Creepster-Regular.ttf::FontFile/FontFile::7527647497189418395::1748788549::1748788712::1::::<><><>0<>0<>56a0f65588024caef290e956b83ac5b2<>res://.godot/imported/Creepster-Regular.ttf-7af55f207a18838b01fb7a587c25f706.fontdata::
-Zombified.ttf::FontFile/FontFile::4662216699813902894::1748788549::1748788712::1::::<><><>0<>0<>dc2a7b32929c902aeaa530e29e77dbfe<>res://.godot/imported/Zombified.ttf-6defe0b50fccab22ebe4229e9bd95f3d.fontdata::
-::res://scenes/::1748788549
-lobby.tscn::PackedScene::873785734830451432::1748788549::0::1::::<><><>0<>0<><>::uid://div47xglobfni::::res://scripts/lobby.gd<>uid://l5lbjg0dfoj7::::res://assets/tło.png<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
-mainMenu.tscn::PackedScene::4103377365875689396::1748788549::0::1::::<><><>0<>0<><>::uid://ciqwtr3ohurkl::::res://scripts/MainMenu.gd<>uid://l5lbjg0dfoj7::::res://assets/tło.png<>uid://dys0jroso33jj::::res://assets/logoZombie.png<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
-player.tscn::PackedScene::5165070817711033840::1748788549::0::1::::<><><>0<>0<><>::uid://cx6jti5xinxio::::res://assets/character and tileset/Dungeon_Character_2.png<>uid://b40itqtbq1ydk::::res://scripts/player.gd
-world.tscn::PackedScene::302902810585876703::1748788549::0::1::::<><><>0<>0<><>::uid://dieb6eylekc5s::::res://scripts/world.gd<>uid://c6c63xlmwsspc::::res://assets/world.tres<>uid://cft87x1jw0ndo::::res://scenes/player.tscn<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
-::res://scripts/::1748788549
-Global.gd::GDScript::6392291631746368855::1748788549::0::1::::<>Node<><>0<>0<><>::
-lobby.gd::GDScript::7765943889038425374::1748788549::0::1::::<>Node<><>0<>0<><>::
-MainMenu.gd::GDScript::5368752801278205299::1748788549::0::1::::<>Node<><>0<>0<><>::
-player.gd::GDScript::4474027128866612096::1748788549::0::1::::Player<>CharacterBody2D<><>0<>0<><>::
-world.gd::GDScript::7729146635477857542::1748788549::0::1::::<>Node2D<><>0<>0<><>::
-::res://server/::1748788643
-::res://server/__pycache__/::1748788549
+::res://::1748851318
+export_presets.cfg::TextFile/TextFile::-1::1748809957::0::1::::<><><>0<>0<><>::
+::res://assets/::1748851256
+logoZombie.png::CompressedTexture2D/CompressedTexture2D::8882488010291355819::1748721577::1748721681::1::::<><><>0<>0<>5b9fb4e1253d2d207aae5fd251aad805<>res://.godot/imported/logoZombie.png-8f71317e5b9d40aa3e4ff67445518564.ctex::
+tło.png::CompressedTexture2D/CompressedTexture2D::834678768473570946::1748721174::1748721216::1::::<><><>0<>0<>d70618fe14246c2bd3d97dd5173746ea<>res://.godot/imported/tło.png-8bc49584213b481b8f7b21a62152b79e.ctex::
+world.tres::TileSet::6954757730283678200::1748851256::0::1::::<><><>0<>0<><>::uid://cl41j42tplf8p::::res://assets/character and tileset/Dungeon_Tileset.png
+::res://assets/character and tileset/::1748477872
+Dungeon_Character_2.png::CompressedTexture2D/CompressedTexture2D::6451761332043068098::1747602928::1747602979::1::::<><><>0<>0<>f265c41bc5475318a14bf8058f82f780<>res://.godot/imported/Dungeon_Character_2.png-90329430ee22b8bd511b976d7673e6bc.ctex::
+Dungeon_Tileset.png::CompressedTexture2D/CompressedTexture2D::5606381881999994733::1747602928::1747602979::1::::<><><>0<>0<>84180e3b150eee3a4950ad93ee171143<>res://.godot/imported/Dungeon_Tileset.png-979c160fca999bf489f0c7d52b4b5e68.ctex::
+::res://assets/fonts/::1748776605
+Creepster-Regular.ttf::FontFile/FontFile::7527647497189418395::1748776591::1748776605::1::::<><><>0<>0<>56a0f65588024caef290e956b83ac5b2<>res://.godot/imported/Creepster-Regular.ttf-7af55f207a18838b01fb7a587c25f706.fontdata::
+Zombified.ttf::FontFile/FontFile::4662216699813902894::1748776078::1748776203::1::::<><><>0<>0<>dc2a7b32929c902aeaa530e29e77dbfe<>res://.godot/imported/Zombified.ttf-6defe0b50fccab22ebe4229e9bd95f3d.fontdata::
+::res://scenes/::1748851256
+lobby.tscn::PackedScene/PackedScene::873785734830451432::1748777588::0::1::::<><><>0<>0<><>::uid://div47xglobfni::::res://scripts/lobby.gd<>uid://l5lbjg0dfoj7::::res://assets/tło.png<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
+mainMenu.tscn::PackedScene::4103377365875689396::1748851256::0::1::::<><><>0<>0<><>::uid://ciqwtr3ohurkl::::res://scripts/MainMenu.gd<>uid://l5lbjg0dfoj7::::res://assets/tło.png<>uid://dys0jroso33jj::::res://assets/logoZombie.png<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
+player.tscn::PackedScene::5165070817711033840::1748851256::0::1::::<><><>0<>0<><>::uid://cx6jti5xinxio::::res://assets/character and tileset/Dungeon_Character_2.png<>uid://b40itqtbq1ydk::::res://scripts/player.gd
+world.tscn::PackedScene::302902810585876703::1748851256::0::1::::<><><>0<>0<><>::uid://dieb6eylekc5s::::res://scripts/world.gd<>uid://c6c63xlmwsspc::::res://assets/world.tres<>uid://cft87x1jw0ndo::::res://scenes/player.tscn<>uid://dfipiwf575h5t::::res://assets/fonts/Creepster-Regular.ttf
+::res://scripts/::1748851220
+Global.gd::GDScript/GDScript::6392291631746368855::1748719969::0::1::::<>Node<><>0<>0<><>::
+lobby.gd::GDScript/GDScript::7765943889038425374::1748776962::0::1::::<>Node<><>0<>0<><>::
+MainMenu.gd::GDScript/GDScript::5368752801278205299::1748851220::0::1::::<>Node<><>0<>0<><>::
+player.gd::GDScript/GDScript::4474027128866612096::1748719969::0::1::::Player<>CharacterBody2D<><>0<>0<><>::
+world.gd::GDScript/GDScript::7729146635477857542::1748807869::0::1::::<>Node2D<><>0<>0<><>::
+::res://server/::1748804238
+::res://server/__pycache__/::1748804238

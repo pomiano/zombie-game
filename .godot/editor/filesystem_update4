@@ -1,9 +1,0 @@
-res://scenes/world.tscn
-res://assets/world.tres
-res://scenes/player.tscn
-res://scenes/mainMenu.tscn
-res://scripts/Global.gd
-res://scripts/lobby.gd
-res://scripts/MainMenu.gd
-res://scripts/player.gd
-res://scripts/world.gd

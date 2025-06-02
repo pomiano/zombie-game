@@ -21,8 +21,6 @@ func _ready():
 	quit_button.pressed.connect(_on_quit_pressed)
 	backMenuButton.pressed.connect(_on_menu_pressed)
 	connecting_panel.hide()  # Upewnij się że panel jest ukryty na starcie
-	ip_input.text = "127.0.0.1" #tymczasowo do testow
-	nick_input.text = "gracz"
 	controls_panel.hide()
 
 func _on_join_pressed():
