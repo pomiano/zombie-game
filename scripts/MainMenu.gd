@@ -20,7 +20,7 @@ func _ready():
 	controls_button.pressed.connect(_on_controls_pressed)
 	quit_button.pressed.connect(_on_quit_pressed)
 	backMenuButton.pressed.connect(_on_menu_pressed)
-	connecting_panel.hide()  # Upewnij się że panel jest ukryty na starcie
+	connecting_panel.hide()  
 	controls_panel.hide()
 
 func _on_join_pressed():
