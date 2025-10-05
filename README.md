@@ -59,10 +59,10 @@ Built with **Godot** (GDScript) for the client and **Python** for the server. Us
 
 ##  Screenshots
 
-![Menu](images/menu)  
-![Lobby](images/lobby)  
-![Gameplay](images/game)  
-![Game Over](images/end)  
+![Menu](images/menu.png)  
+![Lobby](images/lobby.png)  
+![Gameplay](images/game.png)  
+![Game Over](images/end.png)  
 
 ---
 
